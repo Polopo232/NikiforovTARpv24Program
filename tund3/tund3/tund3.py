@@ -3,13 +3,13 @@ from random import *
 #naidis 4
 
 
-nimi1 = input("esimese nimi: ")
-nimi2 = input("teise nimi: ")
+n1 = str(input("esimese nimi: "))
+n2 = str(input("teise nimi: "))
 
-if nimi1.lower() == nimi2.lower():
-        print(f"{nimi1} ja {nimi2} pinginaabrid")
+if n1.lower() == n2.lower():
+        print(f"{n1} ja {n2} pinginaabrid")
 else:
-        print(f"{nimi1} ja {nimi2} ei ole pinginaabrid.")
+        print(f"{n1} ja {n2} ei ole pinginaabrid.")
 
 #naidis 3
 # nimi=input("Mis on sinu nimi?: ")
@@ -61,5 +61,4 @@ elif arv1 == 0:
     print("See on null")
 else:
     print("Negatiivne")
-
 
