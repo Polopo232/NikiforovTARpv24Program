@@ -2,9 +2,87 @@
 from random import *
 #naidis 14
 
+inimesed = int(input("Kui palju inimesi?: "))
+buss_koht = int(input("Mitu kohta on bussis?: "))
+
+bussid_vaja = inimesed // buss_koht
+viimane_buss = inimesed % buss_koht
+
+if viimane_buss > 0:
+    bussid_vaja += 1
+else:
+    viimane_buss = buss_koht
+
+print(f"{bussid_vaja} bussi.")
+print(f"vimane bussi on {viimane_buss} inimest.")
+
     
 
-#naidis 9
+#nadis 13
+
+gender = input("sugu (m/n): ").lower()
+
+if gender == 'm':
+    age = int(input("Kui vana oled?: "))
+    if 16 <= age <= 18:
+        print("Sa sobid")
+    else:
+        print("Sa ei sobi.")
+else:
+    print("Sa ei sobi.")
+
+
+
+#nadis 12 
+
+hinna1 = float(input("Hinna?: "))
+if hinna1 >= 10:
+    hinna2 = hinna1 * 0.1
+    hinna1 -= hinna2
+    print(hinna1)
+if hinna1 <= 11:
+    hinna2 = hinna1 * 0.2
+    hinna1 -= hinna2
+    print(hinna1)
+
+
+#nadis 11
+
+bithday = input("Mis on minu sunnipaev?(day-month(01-01)): ")
+if bithday == "15-03":
+    print("See on minu sunnipaev")
+else:
+    print("See ei ole mine sunnipaev")
+
+#nadis 10
+
+arv1 = float(input("esimine arv: "))
+arv2 = float(input("teine arv: "))
+
+choice3 = input("Mis operatsion sa tahad teha?: ")
+
+if choice3 == "+":
+    print(arv1 + arv2)
+if choice3 == "-":
+    print(arv1 - arv2)
+if choice3 == "*":
+    print(arv1 * arv2)
+if choice3 == "/":
+    print(arv1 / arv2)
+
+
+#nadis 9
+pool1 = float(input("esimene pool: "))
+pool2 = float(input("teine pool: "))
+pool3 = float(input("kolma pool: "))
+pool4 = float(input("nelja pool: "))
+
+if pool1 == pool2 == pool3 == pool4:
+    print("See on ruut")
+else:
+    print("See ei ole ruut")
+
+#naidis 8
 
 tsekk=0
 
@@ -25,7 +103,7 @@ print(tsekk)
     
 
 
-#naidis 8
+#naidis 7
 
 pikk = float(input("Kuidas sinu pikk?: "))
 if pikk <= 120:
@@ -38,7 +116,7 @@ else:
     print("Midagi läks valesti")
 
 
-#naidis 7
+#naidis 5
 
 temp = float(input("Kuidas temp?: "))
 if temp <= 18:
@@ -47,7 +125,7 @@ else:
     print("Soovitav toasoojus talvel")
 
 
-#naidis 6
+#naidis 4
 price1 = float(input("Kuidas hinna?: "))
 
 if price1 >= 700:
@@ -56,7 +134,7 @@ if price1 >= 700:
 else:
     print("ei")
 
-#naidis 5
+#naidis 3
 wall1 = float(input("esimene sein: "))
 wall2 = float(input("teine sein: "))
 
@@ -75,7 +153,7 @@ else:
 
 
 
-#naidis 4
+#naidis 2   
 n1 = input("esimese nimi: ")
 n2 = input("teise nimi: ")
 
@@ -84,7 +162,7 @@ if n1.isalpha() and n2.isalpha() and n1 == "nikita" and n2 == "artjom":
 else:
     print(f"{n1} ja {n2} ei ole pinginaabrid.")
 
-#naidis 3
+#naidis 1
 # nimi=input("Mis on sinu nimi?: ")
 # if nimi.isupper() and nimi.lower()=="juku":
 #     print("Lahme kinnosse")
