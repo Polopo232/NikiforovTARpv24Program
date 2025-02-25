@@ -1,4 +1,129 @@
 ﻿import random
+import random
+
+# Ülesanne 31
+k = random.randint(15, 50)
+m = random.randint(4, 8)
+print(f"Tal on {k} kotlette ja pannile mahub {m} kotlette")
+print(f"On vaja praadida {k // m} täis pannid, ja {k % m} kotletid jäävad ära")
+print()
+
+# Ülesanne 30
+n = random.randint(1, 10)
+m = random.randint(20, 30)
+print(f"N = {n}, M = {m}")
+print("N kuni M:")
+for i in range(n, m + 1):
+    print(i, end=" ")
+print()
+print("M kuni N:")
+for i in range(m, n - 1, -1):
+    print(i, end=" ")
+print()
+
+# Ülesanne 29
+for y in range(9):
+    for x in range(9):
+        if x == 0 or x == y:
+            print("x", end=" ")
+        else:
+            print("0", end=" ")
+    print()
+print()
+
+# Ülesanne 28
+arv = random.randint(1, 10)
+katsed = 0
+print("Arvake arv vahemikus 1-10")
+while True:
+    while True:
+        try:
+            a = int(input("Arvake: "))
+            break
+        except:
+            print("Sisesta täisarv!")
+            continue
+    if a == arv:
+        break
+    katsed += 1
+print(f"Sa võitsid! Arv oli {arv}. Sinu katsed: {katsed}")
+print()
+
+# Ülesanne 23
+r = random.randint(8, 16)
+rS = r ** 2
+a = random.randint(-10, 10)
+b = random.randint(-10, 10)
+print(f"Ring raadiusega {r}, koordinaatides ({a},{b})")
+while True:
+    try:
+        n = int(input("Kui palju punkte tahad sisestada: "))
+        break
+    except:
+        print("Sisesta täisarv!")
+c = 0
+for i in range(n):
+    while True:
+        try:
+            x = int(input("Sisesta x: "))
+            break
+        except:
+            print("Sisesta täisarv!")
+    while True:
+        try:
+            y = int(input("Sisesta y: "))
+            break
+        except:
+            print("Sisesta täisarv!")
+    dx = x - a
+    dy = y - b
+    if dx ** 2 + dy ** 2 <= rS:
+        print("Punkt jääb ringi sisse!")
+        c += 1
+    else:
+        print("Punkt ei jää ringi sisse.")
+print(f"Kokku on {c} punktid, mis jäävad ringi sisse.")
+print()
+
+# Ülesanne 18
+for i in range(20, 51):
+    if i % 3 == 0 and i % 5 != 0:
+        print(f"{i} jagub 3-ga ja ei jaga 5-ga")
+print()
+
+# Ülesanne 17
+arv = random.randint(1, 9)
+for i in range(1, 10):
+    print(f"{arv}*{i}={arv * i}")
+print()
+
+# Ülesanne 16
+for y in range(9):
+    for x in range(9):
+        if x == y:
+            print(x + 1, end=" ")
+        else:
+            print("0", end=" ")
+    print()
+print()
+
+# Ülesanne 15
+for x in range(10):
+    for i in range(10):
+        print(i, end=" ")
+    print()
+print()
+
+# Ülesanne 14
+n = random.randint(5, 20)
+print(f"N = {n}")
+korrutis = 1
+for i in range(1, n + 1):
+    korrutis *= i
+print(f"Korrutis on {korrutis}")
+print()
+
+
 #Ulesanne 15
 for x in range(10):
     for i in range(10):
@@ -19,9 +144,6 @@ for number in range(a, b+1, k):
     total_sum += number
 
 print(f"Kokku :  {count}")
-
-
-
 
 #Ulesanne 12
 N = random.randint(1, 30)
