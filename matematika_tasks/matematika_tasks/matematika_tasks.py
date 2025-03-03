@@ -1,24 +1,31 @@
 import random
-
+# Operation
 op = ["+", "-"]
 op1 = ["+", "-", "*", "/"]
 op2 = ["+", "-", "*", "/", "**"]
 
 while True:
+    # Choose level
     try:
         choice1 = int(input("Tase (1, 2, 3):  "))
     except:
         print("Palun sisestage number")
-
+    # First level
     if choice1 == 1:
         oige = 0
+        #Loop for (in order to be 10 problems)
         for x in range(1, 11):
             try:
+                #Random number 1 to 50
                 num1 = random.randint(1, 50)
                 num2 = random.randint(1, 50)
+                #Random operation
                 random_op = random.choice(op)
+                #Show the problem
                 ans = int(input(f"{num1} {random_op} {num2} = "))
+                #Solve the problem
                 correct_answer = eval(f"{num1} {random_op} {num2}")
+                #Count right answers
                 if ans == correct_answer:
                     print("Õige vastus")
                     oige += 1
@@ -26,7 +33,7 @@ while True:
                     print("Vale vastus")
             except:
                 print("Palun sisestage number")
-
+        #Math the mark
         oige_percentage = (oige / 10) * 100
         print(f"Õigeid vastuseid: {oige}")
         print(f"Hinne: {oige_percentage}%")
@@ -46,7 +53,7 @@ while True:
 
 
 
-
+    # Level 2
     if choice1 == 2:
         oige = 0
         for x in range(1, 11):
@@ -79,7 +86,7 @@ while True:
         choice_q = input("Kas sa jätkama? (y/n): ")
         if choice_q == "n":
             break
-
+    # Level 3
     if choice1 == 3:
         oige = 0
         for x in range(1, 11):
