@@ -42,3 +42,20 @@ for x in range (lahendamine):
     sleep(aeg)
     print("Valmis")
     print("Kõik valmis")
+    
+#V3 1
+Q = int(input("Mitu arvu soovid sisestada?: "))
+pos = 0
+for i in range(Q):
+    arv = float(input(f"Sisesta {i + 1}. arv: "))
+    if arv > 0:
+        pos += arv
+print(f"Positiivsete arvude summa: {pos}")
+
+#V3 2
+
+Y = float(input("Sisesta algne summa: "))
+Z = float(input("Sisesta aastane intress: "))
+H = int(input("Sisesta aastate arv: "))
+final = Y * (1 + Z / 100) ** H
+print(f"Summa {H} aasta pärast: {final} dollarit")
