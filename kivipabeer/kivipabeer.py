@@ -1,11 +1,14 @@
-﻿
+
 import random
 
+choices = ['kivi', 'käärid', 'paber']
+
 while True:
-    choices = ['kivi', 'käärid', 'paber']
+    computer_choice = random.choice(choices)
+
     print("Valige: kivi, käärid või paber")
     try:
-        user_choice = input().lower()
+        if user_choice = input().lower()   
     except:
         print("Viga !")
 
@@ -15,8 +18,8 @@ while True:
     if user_choice == computer_choice:
         print("Viik !")
     elif (user_choice == 'kivi' and computer_choice == 'käärid') or \
-         (user_choice == 'käärid' and computer_choice == 'paber') or \
-         (user_choice == 'paber' and computer_choice == 'kivi'):
+        (user_choice == 'käärid' and computer_choice == 'paber') or \
+        (user_choice == 'paber' and computer_choice == 'kivi'):
         print("Sa oled võitnud!")
     else:
         print("Sa kaotasid!")
