@@ -2,6 +2,29 @@ from Moodul_def_tesks import *
 
 
 
+
+#is_prime
+for ghffg in range (1, 11):
+    x = int(input("Sisend arv: "))
+    print(is_prime(x))
+
+
+#back_cred
+summa = float(input("Summa of euro: "))
+years = int(input("How many year?: "))
+if summa > 0 and years > 0:
+    i = bank_cred(summa, years)
+    print(i)
+else:
+    print("Just zero years or euro")
+
+
+#season
+month = int(input("Number of month: "))
+if month > 0 :
+    x = season(month)
+    print(x)
+
 #square_list
 s_list = square(float(input("Sisesta külg: ")))
 for x in s_list:
