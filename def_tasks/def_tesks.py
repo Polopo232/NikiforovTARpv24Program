@@ -1,6 +1,11 @@
 from Moodul_def_tesks import *
 
-
+d = int(input("Sisesta paev: "))
+m = int(input("Sisesta kuu: "))
+y = int(input("Sisesta aasta: "))
+v = date_check(d, m, y)
+if (v == True): print("Swag")
+else: print("Loh")
 
 
 #is_prime
