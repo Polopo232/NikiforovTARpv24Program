@@ -1,17 +1,15 @@
 #Ulesanne 7
 import calendar
-from datetime import date
+import datetime
 
 
-def date_check(day:int, month:int, year:int)->any:
+def date_check(day: int, month: int, year: int)->any:
     """
     """
-    daysInMonth = calendar.monthrange(year, month)
-    if year > 2025:
-        return False
-    elif month > 12:
-        return False
-    elif day < 1 or day > daysInMonth:
+    try:
+        datetime.date(year, month, day)
+        return True
+    except ValueError:
         return False
 
 #Ulesanne 6
