@@ -46,13 +46,9 @@ def generated_password()-> str:
         str1 = '0123456789'
         str2 = 'qwertyuiopasdfghjklzxcvbnm'
         str3 = str2.upper()
-        print(str3) # 'QWERTYUIOPASDFGHJKLZXCVBNM'
         str4 = str0+str1+str2+str3
-        print(str4)
         ls = list(str4)
-        print(ls)
         random.shuffle(ls)
-        print(ls)
         # Извлекаем из списка 12 произвольных значений
         psword = ''.join([random.choice(ls) for x in range(12)])
         # Пароль готов
@@ -115,6 +111,15 @@ def change_password() -> None:
     else:
         print("Palun logige sisse")
 
+def login_out() -> None:
+    global login_is
+    if login_is == True:
+        login_is = False
+        print("Välja logitud")
+    else:
+        print("Sa ei ole sisse logitud")
+
+
 def menu() -> None:
     global login_is
     while True:
@@ -123,7 +128,8 @@ def menu() -> None:
         print("1. Logi sisse")
         print("2. Registreeri")
         print("3. Muuda parooli")
-        print("4. Välju")
+        print("4. Logi välja")
+        print("5. Välju")
         user_menu_choice = input(": ")
 
         if user_menu_choice == '1':
@@ -133,8 +139,10 @@ def menu() -> None:
         elif user_menu_choice == '3':
             change_password()
         elif user_menu_choice == '4':
-            break
+            login_out()
         elif user_menu_choice == '5':
+            break
+        elif user_menu_choice == '6':
             print(Login)
             print(Password)
         else:
