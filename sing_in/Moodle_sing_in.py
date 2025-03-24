@@ -4,7 +4,7 @@ login_is = False
 Username_l = ""
 
 def check_password(password_c: str) -> bool:
-    """Check the password
+    """Kontrollige parooli
 
     password_c: str
     :rtype: bool
@@ -32,13 +32,17 @@ def check_password(password_c: str) -> bool:
 
 def usernameExists(username: str) -> bool:
     """
-    Check if the username exists
+    Kontrollige, kas kasutajanimi on olemas
+
+    :rtype: bool
     """
     return username in Login
 
 def generated_password()-> str:
     """
-    Generate password
+    Loo parool
+
+    :rtype: str
     """
     import random
     while True:
@@ -60,6 +64,13 @@ def generated_password()-> str:
 
 
 def register() -> None:
+    """
+    Registreerimine süsteemis, sisestate oma nime, seejärel kontrollite,
+    kas nimi on nimekirjas, seejärel sisestate parooli ise või genereerite selle ise, 
+    pärast edukat registreerimist saadetakse teie andmed nimekirja
+
+    :rtype: None
+    """
     Username_r = input("Username: ")
     choice1 = input("Kas soovite luua parooli ise või soovite et programm genereeriks parooli ise? (i/g): ")
     if choice1 == 'i':
@@ -80,6 +91,13 @@ def register() -> None:
         generated_password()
 
 def login() -> None:
+    """
+    Logige süsteemi sisse, kontrollige, kas loendis on logid ja parool,
+    seejärel muutke oma login_is väärtuseks True.
+    Samuti määrab see muutujale Username_l globaalse sisselogimise, mistõttu kirjutatakse menüüsse inimese kasutajanimi
+
+    :rtype: None
+    """
     global login_is, Username_l
     Username_l = input("Username: ")
     Password_l = input("Password: ")
@@ -100,6 +118,12 @@ def login() -> None:
             print("Vale parool")
 
 def change_password() -> None:
+    """
+    Kontrollib, kas inimene on sisse logitud, pärast parooli sisestamist kontrollib läbi password_check.
+    Läbib indeksi parooli ja määrab sellele kasutaja poolt varem sisestatud parooli
+
+    :rtype: None
+    """ 
     global login_is
     if login_is:
         new_password = input("Uus parool: ")
@@ -112,6 +136,11 @@ def change_password() -> None:
         print("Palun logige sisse")
 
 def login_out() -> None:
+    """
+    Kui valite menüüst selle funktsiooni, kontrollib see, kas inimene on sisse logitud, kui jah, siis login_is = true, siis määrab login_is = false
+
+    :rtype: None
+    """
     global login_is
     if login_is == True:
         login_is = False
@@ -121,6 +150,11 @@ def login_out() -> None:
 
 
 def menu() -> None:
+    """
+    Menüü 1. sisselogimine, 2. registreerimine, 3. parooli muutmine, 4. Süsteemist väljumine, 5. Programmist väljumine.
+
+    :rtype: None
+    """
     global login_is
     while True:
         if login_is:
