@@ -8,6 +8,19 @@ gmail = []
 login_is = False
 Username_l = ""
 
+def loe_fail():
+    with open("users.txt", "r", encoding="utf-8-sig") as fail:
+        for line in fail:
+            name, mail, password = line.strip().split(":")
+            Login.append(name)
+            gmail.append(mail)
+            Password.append(password)
+
+def salvesta_fail(kasutajad):
+    with open("users.txt", "w", encoding="utf-8-sig") as fail:
+        for kasutaja in kasutajad:
+            fail.write(f"{kasutaja['login']}:{kasutaja['email']}:{kasutaja['password']}\n")
+    print("Kasutajad on salvestatud faili users.txt")
 
 def saada_kiri(gmail_send, pealkiri, sisse):
     kellele = gmail_send
@@ -16,7 +29,7 @@ def saada_kiri(gmail_send, pealkiri, sisse):
     smtp_server = 'smtp.gmail.com'
     smtp_port = 587
     kellelt = "nikiforovnikita08@gmail.com"
-    parool = 'yksj yudm flgi nyqx'  # Используйте пароль приложения
+    parool = 'yksj yudm flgi nyqx'
     msg = EmailMessage()
     msg['Subject'] = kiri
     msg['From'] = kellelt
@@ -28,16 +41,11 @@ def saada_kiri(gmail_send, pealkiri, sisse):
         server.starttls(context=ssl.create_default_context())
         server.login(kellelt, parool)
         server.send_message(msg)
-        print("Email sent successfully")
+        print("Email saadetud edukalt")
     except Exception as e:
         print(f"Viga: {e}")
 
 def check_password(password_c: str) -> bool:
-    """Kontrollige parooli
-
-    password_c: str
-    :rtype: bool
-    """
     upper = 0
     for x in password_c:
         if x.isupper():
@@ -60,19 +68,9 @@ def check_password(password_c: str) -> bool:
         return False
 
 def usernameExists(username: str) -> bool:
-    """
-    Kontrollige, kas kasutajanimi on olemas
-
-    :rtype: bool
-    """
     return username in Login
 
 def generated_password()-> str:
-    """
-    Loo parool
-
-    :rtype: str
-    """
     import random
     while True:
         str0=".,:;!_*-+()/#¤%&"
@@ -82,15 +80,12 @@ def generated_password()-> str:
         str4 = str0+str1+str2+str3
         ls = list(str4)
         random.shuffle(ls)
-        # Извлекаем из списка 12 произвольных значений
         psword = ''.join([random.choice(ls) for x in range(12)])
-        # Пароль готов
         if check_password(psword) == True:
             print("Sinu parool on ",psword)
             return psword
         else:
             continue
-
 
 def register() -> None:
     global gmail, Login, Password
@@ -113,6 +108,9 @@ def register() -> None:
                     Password.append(Password_r)
                     print("Registreerimine õnnestus!")
                     mail = saada_kiri(gmail_user, f"Täname registreerimise eest", f"Teie kasutajanimi on {username} ja parool on {Password_r}")
+                    kasutajad = loe_fail()
+                    kasutajad.append({"login": username, "email": gmail_user, "password": Password_r})
+                    salvesta_fail(kasutajad)
                     return
                 else:
                     print("Kasutajanimi on juba olemas.")
@@ -124,15 +122,11 @@ def register() -> None:
         Password.append(Password_r)
         Login.append(username)
         mail = saada_kiri(gmail_user, f"Täname registreerimise eest", f"Teie kasutajanimi on {username} ja parool on {Password_r}")
+        kasutajad = loe_fail()
+        kasutajad.append({"login": username, "email": gmail_user, "password": Password_r})
+        salvesta_fail(kasutajad)
 
 def login() -> None:
-    """
-    Logige süsteemi sisse, kontrollige, kas loendis on logid ja parool,
-    seejärel muutke oma login_is väärtuseks True.
-    Samuti määrab see muutujale Username_l globaalse sisselogimise, mistõttu kirjutatakse menüüsse inimese kasutajanimi
-
-    :rtype: None
-    """
     global login_is, Username_l, gmail
     Username_l = input("Username: ")
     user_gmail = input("Gmail: ")
@@ -147,7 +141,7 @@ def login() -> None:
         else:
             choice = input("Vale parool, kas sa tahad muuda? (y/n): ").lower()
             if choice == 'y':
-                print("We saada sulle e-maili, et muuta oma parool, palun kontrolli oma e-maili aadressi")
+                print("Saadame sulle e-maili, et muuta oma parool, palun kontrolli oma e-maili aadressi")
                 saada_kiri(user_gmail, "Parool on vale", "Palun muuda oma parool www.changepassword.com")
             else:
                 print("Vale parool")
@@ -155,12 +149,6 @@ def login() -> None:
         print("Kasutajat ei eksisteeri")
 
 def change_password() -> None:
-    """
-    Kontrollib, kas inimene on sisse logitud, pärast parooli sisestamist kontrollib läbi password_check.
-    Läbib indeksi parooli ja määrab sellele kasutaja poolt varem sisestatud parooli
-
-    :rtype: None
-    """ 
     global login_is
     if login_is:
         new_password = input("Uus parool: ")
@@ -177,11 +165,6 @@ def change_password() -> None:
         print("Palun logige sisse")
 
 def login_out() -> None:
-    """
-    Kui valite menüüst selle funktsiooni, kontrollib see, kas inimene on sisse logitud, kui jah, siis login_is = true, siis määrab login_is = false
-
-    :rtype: None
-    """
     global login_is
     if login_is:
         login_is = False
@@ -189,13 +172,9 @@ def login_out() -> None:
     else:
         print("Sa ei ole sisse logitud")
 
+loe_fail()
 
 def menu() -> None:
-    """
-    Menüü 1. sisselogimine, 2. registreerimine, 3. parooli muutmine, 4. Süsteemist väljumine, 5. Programmist väljumine.
-
-    :rtype: None
-    """
     global login_is
     while True:
         if login_is:
