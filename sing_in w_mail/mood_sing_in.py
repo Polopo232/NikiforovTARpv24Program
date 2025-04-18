@@ -9,12 +9,15 @@ login_is = False
 Username_l = ""
 
 def loe_fail():
+    kasutajad = []
     with open("users.txt", "r", encoding="utf-8-sig") as fail:
         for line in fail:
             name, mail, password = line.strip().split(":")
+            kasutajad.append({"login": name, "email": mail, "password": password})
             Login.append(name)
             gmail.append(mail)
             Password.append(password)
+    return kasutajad
 
 def salvesta_fail(kasutajad):
     with open("users.txt", "w", encoding="utf-8-sig") as fail:
@@ -153,12 +156,19 @@ def change_password() -> None:
     if login_is:
         new_password = input("Uus parool: ")
         if check_password(new_password):
-            Password[Login.index(Username_l)] = new_password
-            try:
-                print("Parool on muudetud")
-                saada_kiri(gmail[Login.index(Username_l)], "Parool on muudetud", f"Teie parool on muudetud on {new_password}")
-            except:
-                print("Viga!")
+            user_index = Login.index(Username_l)
+            Password[user_index] = new_password
+            kasutajad = []
+            for i in range(len(Login)):
+                kasutajad.append({
+                    "login": Login[i],
+                    "email": gmail[i],
+                    "password": Password[i]
+                })
+            salvesta_fail(kasutajad)
+            print("Parool on muudetud")
+
+            saada_kiri(gmail[user_index], "Parool on muudetud", f"Teie uus parool on: {new_password}")
         else:
             print("Parool ei vasta nõuetele")
     else:
