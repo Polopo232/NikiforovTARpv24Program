@@ -32,7 +32,7 @@ def saada_kiri(gmail_send, pealkiri, sisse):
     smtp_server = 'smtp.gmail.com'
     smtp_port = 587
     kellelt = "nikiforovnikita08@gmail.com"
-    parool = 'yksj yudm flgi nyqx'
+    parool = '123'
     msg = EmailMessage()
     msg['Subject'] = kiri
     msg['From'] = kellelt
