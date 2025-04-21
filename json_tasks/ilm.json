@@ -1,0 +1,45 @@
+{
+    "coord": {
+        "lon": 24.0833,
+        "lat": 57
+    },
+    "weather": [
+        {
+            "id": 803,
+            "main": "Clouds",
+            "description": "broken clouds",
+            "icon": "04d"
+        }
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 10.58,
+        "feels_like": 9.86,
+        "temp_min": 10.04,
+        "temp_max": 10.58,
+        "pressure": 1012,
+        "humidity": 83,
+        "sea_level": 1012,
+        "grnd_level": 1011
+    },
+    "visibility": 10000,
+    "wind": {
+        "speed": 3.09,
+        "deg": 360
+    },
+    "clouds": {
+        "all": 75
+    },
+    "dt": 1745232086,
+    "sys": {
+        "type": 2,
+        "id": 2075320,
+        "country": "LV",
+        "sunrise": 1745204389,
+        "sunset": 1745257471
+    },
+    "timezone": 10800,
+    "id": 456173,
+    "name": "Rīga",
+    "cod": 200
+}
