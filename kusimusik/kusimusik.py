@@ -1,5 +1,8 @@
 import random
 import datetime
+import smtplib
+import ssl
+from email.message import EmailMessage
 
 kus_vas = {
     "Mis on Python?": "programmeermiskeel",
@@ -14,18 +17,102 @@ kus_vas = {
 
 koik_vastajad = []
 edukad = []
-ebaedukad = []
+
+KUSIMUSED_FAIL = "kusimused_vastused.txt"
+SMTP_SERVER = 'smtp.gmail.com'
+SMTP_PORT = 587
+EMAIL_FROM = "nikiforovnikita08@gmail.com"
+EMAIL_PASSWORD = '123'
+EMPLOYER_EMAIL = "tootaja@firma.ee"
+
+def lisa_kusimus():
+    print("\nUue küsimuse lisamine:")
+    kusimus = input("Sisesta uus küsimus: ").strip()
+    
+    if not kusimus:
+        print("Küsimus ei tohi olla tühi!")
+        return
+        
+    if kusimus in kus_vas:
+        print("See küsimus on juba olemas!")
+        return
+    
+    vastus = input("Sisesta õige vastus: ").strip()
+    if not vastus:
+        print("Vastus ei tohi olla tühi!")
+        return
+    
+    with open(KUSIMUSED_FAIL, "a", encoding="utf-8") as f:
+        f.write(f"{kusimus}:{vastus}\n")
+    
+    kus_vas[kusimus] = vastus
+    print("Küsimus lisatud edukalt!")
+
+def saada_kiri(kellele, pealkiri, sisu):
+    msg = EmailMessage()
+    msg['Subject'] = pealkiri
+    msg['From'] = EMAIL_FROM
+    msg['To'] = kellele
+    msg.set_content(sisu)
+
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls(context=ssl.create_default_context())
+            server.login(EMAIL_FROM, EMAIL_PASSWORD)
+            server.send_message(msg)
+        print(f"Email saadetud edukalt aadressile {kellele}")
+        return True
+    except Exception as e:
+        print(f"Emaili saatmine ebaõnnestus: {e}")
+        return False
+
+def saada_tulemus_kasutajale(nimi, email, oiged, kokku, edukas):
+    pealkiri = "Teie testi tulemused"
+    
+    if edukas:
+        sisu = f"""Tere, {nimi}!
+
+Õigete vastuste arv: {oiged} ({oiged}/{kokku}).
+Te olete testi edukalt läbinud.
+
+Parimate soovidega,
+Küsitluse meeskond"""
+        edukad.append((nimi, f"{oiged}/{kokku}"))
+    else:
+        sisu = f"""Tere, {nimi}!
+
+Õigete vastuste arv: {oiged} ({oiged}/{kokku}).
+Kahjuks te ei läbinud testi.
+
+"""
+    
+    return saada_kiri(email, pealkiri, sisu)
+
+def saada_aruanne_tööandjale():
+    try:
+        with open("koik.txt", "r", encoding="utf-8") as f:
+            koik_sisu = f.read()
+        
+        if not koik_sisu:
+            print("Fail koik.txt on tühi")
+            return False
+            
+        pealkiri = "Küsitluse tulemuste aruanne"
+        sisu = f"""Tere!
+
+Kõikide testis osalenud tulemused:
+
+{koik_sisu}
+
+"""
+        
+        return saada_kiri(EMPLOYER_EMAIL, pealkiri, sisu)
+    except Exception as e:
+        print(f"Aruande koostamine ebaõnnestus: {e}")
+        return False
 
 def loo_email(nimi):
-    qwe = nimi.split()
-    if len(qwe) == 2:
-        return f"{qwe[0].lower()}@example.com"
-    else:
-        return f"{qwe[0].lower()}@example.com"
-
-def check_answer(question, user_answer):
-    oige_vastus = kus_vas[question]
-    return user_answer.strip().lower() == oige_vastus.lower()
+    return f"{nimi.lower().split()[0]}@example.com"
 
 def mangu():
     oige_kus = 0
@@ -40,39 +127,108 @@ def mangu():
     random_questions = random.sample(list(kus_vas.keys()), n)
 
     for question in random_questions:
-        print(f"{nimi}, {question}")
+        print(f"\nKüsimus: {question}")
         user_answer = input("Teie vastus: ")
-
-        if check_answer(question, user_answer):
+        
+        if user_answer.strip().lower() == kus_vas[question].lower():
             print("Õige vastus!")
             oige_kus += 1
         else:
-            print("Vale vastus!")
+            print(f"Vale vastus! Õige vastus oleks olnud: {kus_vas[question]}")
 
-    print(f"\n{nimi}, teie tulemus: {oige_kus} õiget vastust {n} küsimusest.")
-
-    if oige_kus > n // 2:
-        print("Test on edukas!")
-        edukad.append((nimi, oige_kus))
-    else:
-        print("Test ei ole edukas!")
-        ebaedukad.append((nimi, oige_kus))
+    print(f"\n{nimi}, teie tulemus: {oige_kus}/{n} õiget vastust")
 
     email = loo_email(nimi)
-    koik_vastajad.append((nimi, email, oige_kus))
+    
+    with open("koik.txt", "a", encoding="utf-8") as f:
+        f.write(f"{datetime.date.today()} ❘ {nimi} ❘ {oige_kus}/{n} ❘ {email}\n")
 
-    #koik.txt
-    with open("koik.txt", "a", encoding="utf-8") as file:
-        file.write(f"{datetime.date.today()} ❘ {nimi} ❘ {oige_kus} / {n} ❘ {email}\n")
+    edukas = oige_kus > n // 2
+    saada_tulemus_kasutajale(nimi, email, oige_kus, n, edukas)
+    saada_aruanne_tööandjale()
 
-    # oiged.txt
-    with open("oiged.txt", "w", encoding="utf-8") as f:
-        # Сортируем по второму элементу кортежа (оценке)
-        for name, score in sorted(edukad, reverse=True):
-            f.write(f"{name} ❘ {score} \n")
+def extract_name(line):
+    return line.split(" ❘ ")[0].strip().lower()
 
-    # valed.txt
-    with open("valed.txt", "w", encoding="utf-8") as f:
-        f.write(f"{nimi} ❘ {n - oige_kus} \n")
+def sort_vale():
+    try:
+        with open("valed.txt", "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        
+        lines.sort(key=extract_name)
 
-mangu()
+        with open("valed.txt", "w", encoding="utf-8") as f:
+            f.writelines(lines)
+    except:
+        print("Faili 'valed.txt' pole olemas!")
+
+def extract_score(line):
+    return int(line.split(" ❘ ")[1].split("õige")[0].strip())
+
+def sort_oiged():
+    try:
+        with open("oiged.txt", "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        
+        lines.sort(key=extract_score, reverse=True)
+        
+        with open("oiged.txt", "w", encoding="utf-8") as f:
+            f.writelines(lines)
+    except:
+        print("Faili 'oiged.txt' pole olemas!")
+
+
+def genereeri_andmed(arv=10):
+    """Genereerib testandmed ja täidab kõik failid"""
+    eesnimed = ["Mari", "Jaan", "Kati", "Tõnu", "Liisa", "Peeter", "Anna", "Martin"]
+    perenimed = ["Tamm", "Saar", "Kask", "Sepp", "Mets", "Kukk", "Pärn", "Rebane"]
+    tulemused = []
+
+    for i in range(arv):
+        nimi = f"{random.choice(eesnimed)} {random.choice(perenimed)}"
+        kokku = random.randint(5, 10)
+        oiged = random.randint(0, kokku)
+        email = f"{nimi.split()[0].lower()}@example.com"
+        tulemused.append((nimi, oiged, kokku, email))
+
+        with open("koik.txt", "a", encoding="utf-8") as f:
+            f.write(f"{datetime.date.today()} ❘ {nimi} ❘ {oiged}/{kokku} ❘ {email}\n")
+
+        if oiged > kokku // 2:
+            with open("oiged.txt", "a", encoding="utf-8") as f:
+                f.write(f"{nimi} ❘ {oiged} õige, kokku oli {kokku}\n")
+        else:
+            with open("valed.txt", "a", encoding="utf-8") as f:
+                f.write(f"{nimi} ❘ {kokku - oiged} vale, kokku oli {kokku}\n")
+
+    sort_oiged()
+    sort_vale()
+    
+    print(f"Genereeriti {arv} testandmet. Failid on täidetud!")
+
+while True:
+    print("\n=== MENÜÜ ===")
+    print("1. Alusta testi")
+    print("2. Lisa küsimus")
+    print("3. Näita tulemusi ja välju")
+    
+    valik = input("Valik: ").strip()
+    
+    if valik == "1":
+        mangu()
+    elif valik == "2":
+        lisa_kusimus()
+    elif valik == "3":
+        print("\n=== EDUKAD VASTANUD ===")
+        for i, (nimi, tulemus) in enumerate(edukad, 1):
+            print(f"{i}. {nimi}: {tulemus}")
+        print("\nTulemused saadetud e-posti aadressidele.")
+        break
+    elif valik == "4": 
+        try:
+            arv = int(input("Kui palju testandmeid genereerida?: "))
+            genereeri_andmed(arv)
+        except ValueError:
+            print("Palun sisesta number!")
+    else:
+        print("Vale valik! Palun proovige uuesti.")
