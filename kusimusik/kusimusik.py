@@ -133,23 +133,28 @@ def mangu():
     oige_kus = 0
 
     while True:
-        nimi = input("Sisestage oma nimi (eesnimi perekonnanimi): ").strip()
-        if len(nimi) < 2:
-            print("Nimi peab olema vähemalt 2 tähemärki pikk!")
+        nimi = input("Sisestage oma nimi: ").strip()
+        pere_nimi = input("Sisestage oma perekonnanimi: ").strip()
+
+        if len(nimi) < 2 or len(pere_nimi) < 2:
+            print("Nimi ja perekonnanimi peavad olema vähemalt 2 tähemärki pikad!")
             continue
+
+        täisnimi = f"{nimi} {pere_nimi}"
 
         with open("koik.txt", "r", encoding="utf-8") as f:
             koik_sisu = f.readlines()
 
-        unikal_nimed = set()
+        unikaalsed_nimed = set()
 
         for rida in koik_sisu:
             if "❘" in rida:
                 osad = rida.split("❘")
                 if len(osad) > 1:
-                    nimi_in_file = osad[1].strip()
-                    unikal_nimed.add(nimi_in_file)
-        if nimi in unikal_nimed:
+                    nimi_failist = osad[1].strip()
+                    unikaalsed_nimed.add(nimi_failist)
+
+        if täisnimi in unikaalsed_nimed:
             print("See nimi on juba registreeritud. Palun sisestage teine nimi.")
             continue
 
@@ -161,7 +166,7 @@ def mangu():
     if n < 1 or n > max_kus:
         print("Palun sisestage korrektne arv küsimusi.")
         return
-
+        
     random_questions = random.sample(list(kus_vas.keys()), n)
 
     for question in random_questions:
@@ -174,22 +179,22 @@ def mangu():
         else:
             print(f"Vale vastus! Õige vastus oleks olnud: {kus_vas[question]}")
 
-    print(f"\n{nimi}, teie tulemus: {oige_kus}/{n} õiget vastust")
+    print(f"\n{täisnimi}, teie tulemus: {oige_kus}/{n} õiget vastust")
 
-    email = loo_email(nimi)
+    email = loo_email(täisnimi)
     
     with open("koik.txt", "a", encoding="utf-8") as f:
-        f.write(f"{datetime.date.today()} ❘ {nimi} ❘ {oige_kus}/{n} ❘ {email}\n")
+        f.write(f"{datetime.date.today()} ❘ {täisnimi} ❘ {oige_kus}/{n} ❘ {email}\n")
 
     edukas = oige_kus > n // 2
     if edukas:
         with open("oiged.txt", "a", encoding="utf-8") as f:
-            f.write(f"{nimi} ❘ {oige_kus} õige, kokku oli {n}\n")
+            f.write(f"{täisnimi} ❘ {oige_kus} õige, kokku oli {n}\n")
     else:
         with open("valed.txt", "a", encoding="utf-8") as f:
-            f.write(f"{nimi} ❘ {n - oige_kus} vale, kokku oli {n}\n")
+            f.write(f"{täisnimi} ❘ {n - oige_kus} vale, kokku oli {n}\n")
 
-    saada_tulemus_kasutajale(nimi, email, oige_kus, n, edukas)
+    saada_tulemus_kasutajale(täisnimi, email, oige_kus, n, edukas)
     saada_aruanne_tööandjale()
     sort_oiged()
     sort_vale()
