@@ -22,7 +22,7 @@ KUSIMUSED_FAIL = "kusimused_vastu.txt"
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 EMAIL_FROM = "nikiforovnikita08@gmail.com"
-EMAIL_PASSWORD = '123'
+EMAIL_PASSWORD = 'yksj yudm flgi nyqx'
 EMPLOYER_EMAIL = "tootaja@firma.ee"
 
 def lisa_kusimus():
@@ -131,7 +131,30 @@ def loo_email(nimi):
 
 def mangu():
     oige_kus = 0
-    nimi = input("Sisestage oma nimi (eesnimi perekonnanimi): ").strip()
+
+    while True:
+        nimi = input("Sisestage oma nimi (eesnimi perekonnanimi): ").strip()
+        if len(nimi) < 2:
+            print("Nimi peab olema vähemalt 2 tähemärki pikk!")
+            continue
+
+        with open("koik.txt", "r", encoding="utf-8") as f:
+            koik_sisu = f.readlines()
+
+        unikal_nimed = set()
+
+        for rida in koik_sisu:
+            if "❘" in rida:
+                osad = rida.split("❘")
+                if len(osad) > 1:
+                    nimi_in_file = osad[1].strip()
+                    unikal_nimed.add(nimi_in_file)
+        if nimi in unikal_nimed:
+            print("See nimi on juba registreeritud. Palun sisestage teine nimi.")
+            continue
+
+        break
+
     max_kus = len(kus_vas)
     n = int(input(f"Kui palju küsimusi soovite esitada? (max {max_kus}): "))
 
