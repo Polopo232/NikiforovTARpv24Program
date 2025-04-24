@@ -5,7 +5,7 @@ import ssl
 from email.message import EmailMessage
 
 kus_vas = {
-    "Mis on Python?": "programmeermiskeel",
+    "Mis on Python?": "programmeerimiskeel",
     "Mis värvi on lumi?": "valge",
     "Kui palju planeete on päikesesüsteemis?": "8",
     "Kes kirjutas 'Sõda ja rahu'?": "Lev Tolstoi",
@@ -18,7 +18,7 @@ kus_vas = {
 koik_vastajad = []
 edukad = []
 
-KUSIMUSED_FAIL = "kusimused_vastused.txt"
+KUSIMUSED_FAIL = "kusimused_vastu.txt"
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 EMAIL_FROM = "nikiforovnikita08@gmail.com"
@@ -91,22 +91,32 @@ Kahjuks te ei läbinud testi.
 def saada_aruanne_tööandjale():
     try:
         with open("koik.txt", "r", encoding="utf-8") as f:
-            koik_sisu = f.read()
-        
+            koik_sisu = f.readlines()
+
         if not koik_sisu:
             print("Fail koik.txt on tühi")
             return False
-            
+
+        nimed = {
+            rida.split("❘")[1].strip()
+            for rida in koik_sisu
+            if "❘" in rida and len(rida.split("❘")) > 1
+        }
+
+        if len(nimed) < 10:
+            print(f"Aruannet ei saadeta — leiti ainult {len(nimed)} unikaalset nime.")
+            return False
+
         pealkiri = "Küsitluse tulemuste aruanne"
         sisu = f"""Tere!
 
 Kõikide testis osalenud tulemused:
 
-{koik_sisu}
+{''.join(koik_sisu)}
 
 """
-        
         return saada_kiri(EMPLOYER_EMAIL, pealkiri, sisu)
+
     except Exception as e:
         print(f"Aruande koostamine ebaõnnestus: {e}")
         return False
@@ -149,8 +159,17 @@ def mangu():
         f.write(f"{datetime.date.today()} ❘ {nimi} ❘ {oige_kus}/{n} ❘ {email}\n")
 
     edukas = oige_kus > n // 2
+    if edukas:
+        with open("oiged.txt", "a", encoding="utf-8") as f:
+            f.write(f"{nimi} ❘ {oige_kus} õige, kokku oli {n}\n")
+    else:
+        with open("valed.txt", "a", encoding="utf-8") as f:
+            f.write(f"{nimi} ❘ {n - oige_kus} vale, kokku oli {n}\n")
+
     saada_tulemus_kasutajale(nimi, email, oige_kus, n, edukas)
     saada_aruanne_tööandjale()
+    sort_oiged()
+    sort_vale()
 
 def extract_name(line):
     return line.split(" ❘ ")[0].strip().lower()
