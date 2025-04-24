@@ -22,7 +22,7 @@ KUSIMUSED_FAIL = "kusimused_vastu.txt"
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 EMAIL_FROM = "nikiforovnikita08@gmail.com"
-EMAIL_PASSWORD = '123'
+EMAIL_PASSWORD = 'yksj yudm flgi nyqx'
 EMPLOYER_EMAIL = "tootaja@firma.ee"
 
 def lisa_kusimus():
