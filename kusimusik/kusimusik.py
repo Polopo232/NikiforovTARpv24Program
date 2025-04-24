@@ -115,7 +115,14 @@ Kõikide testis osalenud tulemused:
 {''.join(koik_sisu)}
 
 """
-        return saada_kiri(EMPLOYER_EMAIL, pealkiri, sisu)
+        tulemus = saada_kiri(EMPLOYER_EMAIL, pealkiri, sisu)
+        
+        if tulemus:
+            with open("koik.txt", "w", encoding="utf-8") as f:
+                f.write("")
+            print("Fail koik.txt on tühjendatud.")
+        
+        return tulemus
 
     except Exception as e:
         print(f"Aruande koostamine ebaõnnestus: {e}")
