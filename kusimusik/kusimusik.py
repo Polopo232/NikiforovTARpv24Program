@@ -111,8 +111,13 @@ Kõikide testis osalenud tulemused:
         print(f"Aruande koostamine ebaõnnestus: {e}")
         return False
 
+
 def loo_email(nimi):
-    return f"{nimi.lower().split()[0]}@example.com"
+    qwe = nimi.split()
+    if len(qwe) == 2:
+        return f"{qwe[0].lower()}@example.com"
+    else:
+        return f"{qwe[0].lower()}@example.com"
 
 def mangu():
     oige_kus = 0
