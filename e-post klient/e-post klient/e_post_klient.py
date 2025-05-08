@@ -1,4 +1,4 @@
-﻿import smtplib
+import smtplib
 import json
 import ssl
 import imghdr
@@ -10,101 +10,87 @@ from tkinter import messagebox
 import ttkbootstrap as ttk
 
 SAVE_FILE = "draft.json"
-file = None
+files = []
 
 # functions
 def load_draft():
-    global file
-    try:
-        with open(SAVE_FILE, "r") as f:
-            draft_data = json.load(f)
-            email_input.delete(0, END)
-            email_input.insert(0, draft_data.get("email", ""))
-            tema_input.delete(0, END)
-            tema_input.insert(0, draft_data.get("tema", ""))
-            kirja_input.delete("1.0", END)
-            kirja_input.insert("1.0", draft_data.get("message", ""))
-            file = draft_data.get("file", "")
-            if file:
-                image_path_label.config(text=file.split('/')[-1])
-    except FileNotFoundError:
-        print("No saved draft found.")
-    except json.JSONDecodeError:
-        print("Error reading draft.")
+    global files
+    with open(SAVE_FILE, "r") as f:
+        draft_data = json.load(f)
+        email_input.delete(0, END)
+        email_input.insert(0, draft_data.get("email", ""))
+        tema_input.delete(0, END)
+        tema_input.insert(0, draft_data.get("tema", ""))
+        kirja_input.delete("1.0", END)
+        kirja_input.insert("1.0", draft_data.get("message", ""))
+        files = draft_data.get("files", [])
+        if files:
+            image_path_label.config(text=f"Valitud {len(files)} faili")
 
 def pre_window():
-    global file
-    new_window = ttk.Window(themename="cosmo")
-    new_window.title("Teema 8")
-    new_window.geometry("500x500")
-    new_window.resizable(width=True, height=True)
+    global file, files
+    
+    preview_window = ttk.Toplevel(aken)
+    preview_window.title("Eelvaade")
+    preview_window.geometry("600x750")
 
     tema = tema_input.get()
     email = email_input.get()
     message = kirja_input.get("1.0", END)
+    
+    # Заголовок окна
+    title_label = ttk.Label(preview_window, text="Eelvaade", font=("Arial", 16, "bold"))
+    title_label.pack(pady=10)
 
-    preview_label = ttk.Label(new_window, text="Eelvaade", font=("Arial", 16))
-    tema_label = ttk.Label(new_window, text=f"Tema: {tema}", font=("Arial", 16))
-    email_label = ttk.Label(new_window, text=f"Saaja: {email}", font=("Arial", 16))
-    message_label = ttk.Label(new_window, text="Kiri:", font=("Arial", 16))
-    message_content = ttk.Label(new_window, text=message, font=("Arial", 16), justify=LEFT)
+    email_frame = ttk.Frame(preview_window)
+    email_frame.pack(fill='x', padx=10, pady=5)
+    ttk.Label(email_frame, text="Saaja:", font=("Arial", 12)).pack(side='left')
+    ttk.Label(email_frame, text=email, font=("Arial", 12)).pack(side='left', padx=5)
 
-    if not file:
-        image_text = "Lisa puudub"
-        image_label = ttk.Label(new_window, text=image_text, font=("Arial", 12))
+    tema_frame = ttk.Frame(preview_window)
+    tema_frame.pack(fill='x', padx=10, pady=5)
+    ttk.Label(tema_frame, text="Teema:", font=("Arial", 12)).pack(side='left')
+    ttk.Label(tema_frame, text=tema, font=("Arial", 12)).pack(side='left', padx=5)
+
+    ttk.Label(preview_window, text="Kiri:", font=("Arial", 12)).pack(anchor='w', padx=10, pady=5)
+    
+    message_frame = ttk.Frame(preview_window)
+    message_frame.pack(fill='both', expand=True, padx=10, pady=5)
+
+    message_text = Text(message_frame, wrap='word', font=("Arial", 11))
+    message_text.insert('1.0', message)
+    message_text.config(state='disabled')
+    message_text.pack(side='left', fill='both', expand=True)
+
+    ttk.Label(preview_window, text="Lisa:", font=("Arial", 12)).pack(anchor='w', padx=10, pady=5)
+    
+    if files:
+        for f in files:
+            ttk.Label(preview_window, text=f.split('/')[-1]).pack(anchor='w', padx=20)
+    elif file:
+        ttk.Label(preview_window, text=file.split('/')[-1]).pack(anchor='w', padx=20)
     else:
-        image_text = f"Lisa: {file.split('/')[-1]}"
-        image_label = ttk.Label(new_window, text=image_text, font=("Arial", 12))
+        ttk.Label(preview_window, text="Puuduvad").pack(anchor='w', padx=20)
+    
+    buttons_frame = ttk.Frame(preview_window)
+    buttons_frame.pack(pady=10)
 
-        try:
-            img = PhotoImage(file=file)
-
-            max_size = 150
-            width, height = img.width(), img.height()
-            aspect_ratio = width / height
-
-            if width > max_size or height > max_size:
-                if aspect_ratio > 1:
-                    new_width = max_size
-                    new_height = int(max_size / aspect_ratio)
-                else:
-                    new_height = max_size
-                    new_width = int(max_size * aspect_ratio)
-
-                img = img.subsample(int(width / new_width), int(height / new_height))
-
-            image_display_label = ttk.Label(new_window, image=img)
-            image_display_label.image = img
-            image_display_label.grid(row=6, column=0, columnspan=2, padx=5, pady=5)
-        except Exception as e:
-            print(f"Error loading image: {e}")
-            image_label = ttk.Label(new_window, text="Невозможно загрузить изображение", font=("Arial", 12))
-
-    # function to send email
-    def send_email():
+    def saada_kiri_command():
         emailNupp()
-        new_window.destroy()
+        preview_window.destroy()
 
-    # buttons
-    send_button = ttk.Button(new_window, text="Saada", style="success.TButton", command=send_email)
-    cancel_button = ttk.Button(new_window, text="Tühista", style="danger.TButton", command=new_window.destroy)
-
-    # output
-    preview_label.grid(row=0, column=0, columnspan=2, sticky="w", padx=5, pady=5)
-    tema_label.grid(row=1, column=0, columnspan=2, sticky="w", padx=5, pady=5)
-    email_label.grid(row=2, column=0, columnspan=2, sticky="w", padx=5, pady=5)
-    message_label.grid(row=3, column=0, columnspan=2, sticky="w", padx=5, pady=5)
-    message_content.grid(row=4, column=0, columnspan=2, sticky="w", padx=5, pady=5)
-    image_label.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
-
-    send_button.grid(row=7, column=0, padx=5, pady=10, sticky="e")
-    cancel_button.grid(row=7, column=1, padx=5, pady=10, sticky="w")
+    send_button = ttk.Button(buttons_frame, text="Saada", style='success.TButton', command=saada_kiri_command)
+    send_button.pack(side='left', padx=5)
+    
+    cancel_button = ttk.Button(buttons_frame, text="Tühista", style='danger.TButton', command=preview_window.destroy)
+    cancel_button.pack(side='left', padx=5)
 
 def vali_pilt(): 
-    global file 
-    file = filedialog.askopenfilename() 
-    if file:
-        image_path_label.config(text=file)
+    global files
+    selected = filedialog.askopenfilenames()
+    if selected:
+        files = list(selected)
+        image_path_label.config(text=f"Valitud {len(files)} faili")
 
 def emailNupp():
     teema = tema_input.get()
@@ -116,52 +102,63 @@ def emailNupp():
         for email in kellele.split(","):
             saada_kiri(email.strip(), kiri, teema)
 
-def saada_kiri(kellele, kiri, teema): 
-    smtp_server = "smtp.gmail.com"
-    port = 587
-    sender_email = "nikiforovnikita08@gmail.com"
-    password = 'yksj yudm flgi nyqx' #УДАЛИТЬ 
-    context = ssl.create_default_context()
-    msg = EmailMessage()
-    msg.set_content(kiri)
-    msg['Subject'] = teema
-    msg['From'] = "Nikita"
-    msg['To'] = kellele
-
-    if file:
-        with open(file, 'rb') as fpilt:
-            pilt = fpilt.read()
-            msg.add_attachment(pilt, maintype='image', subtype=imghdr.what(None, pilt))
-
-    try:
-        server = smtplib.SMTP(smtp_server, port)
-        server.starttls(context=context)
-        server.login(sender_email, password)
-        server.send_message(msg)
-        messagebox.showinfo("Informatsioon", "Kiri oli saadetud")
-    except Exception as e:
-        messagebox.showerror("Tekkis viga!", str(e))
-    finally:
-        server.quit()
+def saada_kiri(kellele, kiri, teema):
+        smtp_server = "smtp.gmail.com"
+        port = 587
+        sender_email = "nikiforovnikita08@gmail.com"
+        password = '123' #УДАЛИТЬ 
+        context = ssl.create_default_context()
+        msg = EmailMessage()
+        msg.set_content(kiri)
+        msg["Subject"] = teema
+        msg["From"] = "Nikita"
+        msg["To"] = kellele
+        
+        for file_path in files:
+            with open(file_path, "rb") as f:
+                file_data = f.read()
+                if file_path.lower().endswith(".jpg"):
+                    msg.add_attachment(file_data, maintype="image", subtype="jpeg", filename=file_path.split('/')[-1])
+                elif file_path.lower().endswith(".png"):
+                    msg.add_attachment(file_data, maintype="image", subtype="png", filename=file_path.split('/')[-1])
+                else:
+                    msg.add_attachment(file_data, maintype="application", subtype="octet-stream", filename=file_path.split('/')[-1])
+        
+        try:
+            server = smtplib.SMTP(smtp_server, port)
+            server.starttls(context=context)
+            server.login(sender_email, password)
+            server.send_message(msg)
+            messagebox.showinfo("Informatsioon", "Kiri oli saadetud")
+        except Exception as e:
+            messagebox.showerror("Tekkis viga!", str(e))
+        finally:
+            server.quit()
 
 def save_draft():
     draft_data = {
         "email": email_input.get(),
         "tema": tema_input.get(),
         "message": kirja_input.get("1.0", END),
-        "file": file if file else ""
+        "files": files
     }
     with open(SAVE_FILE, "w") as f:
         json.dump(draft_data, f)
-    print("Mustand salvestatud!")
 
 def on_closing():
     save_draft()
     aken.quit()
 
+def few_files():
+    global files
+    selected = filedialog.askopenfilenames()
+    if selected:
+        files = list(selected)
+        image_path_label.config(text=f"Valitud {len(files)} faili")
+    
 # window
-aken = ttk.Window(themename="cosmo")
-aken.title("Teema 8")
+aken = ttk.Window(themename="cyborg")
+aken.title("E-posti klient")
 aken.geometry("500x500")
 aken.resizable(width=True, height=True)
 
