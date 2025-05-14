@@ -1,9 +1,11 @@
-﻿from tkinter import *
+from tkinter import *
 from tkinter import simpledialog
+from tkinter import ttk
 from PIL import Image, ImageTk
 import random
 import os
 import json
+import ttkbootstrap as ttk
 
 suits = ['hearts', 'diamonds', 'clubs', 'spades']
 rank_files = {
@@ -38,8 +40,8 @@ def get_name():
         window.destroy()
 
 def start_game():
-    start_button.pack_forget()
-    history_button.pack_forget()
+    start_button.pack()
+    history_button.pack()
     GameWindow()
 
 def show_history():
@@ -171,7 +173,7 @@ def dealer_turn():
         current_game["result"] = "Lose"
     elif dealer_score < player_score:
         end_game("Sa võidad!")
-        current_game["result"] = "Win"
+        current_game["result"] = "WIN"
     else:
         end_game("Tie!")
         current_game["result"] = "Draw"
@@ -256,9 +258,8 @@ def GameWindow():
     global take_card, stand_button, restart_button, result_label
     
     game_window = Toplevel(window)
-    game_window.title("Blackjack")
+    game_window.title("In game")
     game_window.geometry("800x600")
-    game_window.configure(bg="green")
 
     cards_frame = Frame(game_window, bg="green")
 
@@ -268,11 +269,11 @@ def GameWindow():
 
     buttons_frame = Frame(game_window, bg="green")
     
-    take_card = Button(buttons_frame, text="Võtke kaart", font=("Arial", 14), bg="red", fg="white", command=deal_and_show_card)
+    take_card = ttk.Checkbutton(buttons_frame, text="Võtke kaart", bootstyle="success-toolbutton", command=deal_and_show_card)
     
-    stand_button = Button(buttons_frame, text="Stop", font=("Arial", 14), bg="black", fg="white", command=dealer_turn)
+    stand_button = ttk.Checkbutton(buttons_frame, text="Stop", bootstyle="danger-toolbutton", command=dealer_turn)
     
-    restart_button = Button(buttons_frame, text="Uuesti", font=("Arial", 14), bg="blue", fg="white", command=restart_game, state=DISABLED)
+    restart_button = ttk.Checkbutton(buttons_frame, text="Uuesti", bootstyle="toolbutton" , command=restart_game, state=DISABLED)
     
     result_label = Label(game_window, text="", font=("Arial", 18), bg="green")
 
@@ -289,19 +290,23 @@ def GameWindow():
     
     begin_game()
 
-window = Tk()
+window = ttk.Window(themename="darkly")
 window.title("BlackJack")
 window.geometry("400x300")
-window.configure(bg="green")
+
 
 load_player_data()
 
-Label(window, text="Blackjack", font=("Arial", 24), bg="green", fg="white").pack(pady=20)
+black_text = ttk.Label(window, text="Blackjack", bootstyle="light")
+black_text.config(font=("", 24))
 
-start_button = Button(window, text="Alusta mängu", font=("Arial", 16), bg="black", fg="white", command=get_name)
+black_text.pack(pady=20)
+
+
+start_button = ttk.Button(window, text="Alusta mängu", bootstyle="success", command=get_name)
 start_button.pack(pady=10)
 
-history_button = Button(window, text="Mängu ajalugu", font=("Arial", 16), bg="black", fg="white", command=show_history)
+history_button = ttk.Button(window, text="Mängu ajalugu", bootstyle="light", command=show_history)
 history_button.pack(pady=10)
 
 window.mainloop()
