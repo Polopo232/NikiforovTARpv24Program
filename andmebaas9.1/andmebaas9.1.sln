@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36109.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "andmebaas9.1", "andmebaas9.1.pyproj", "{9C55A5CD-5E60-41EC-A975-62BE1720B36F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C55A5CD-5E60-41EC-A975-62BE1720B36F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C55A5CD-5E60-41EC-A975-62BE1720B36F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C8C751AB-B5EA-433D-BDF3-9B043C4AA2BE}
+	EndGlobalSection
+EndGlobal
