@@ -1,15 +1,19 @@
 import tkinter as tk
 from tkinter import colorchooser
 from PIL import Image, ImageTk, ImageOps
+import customtkinter
+from CTkColorPicker import * # download CTkColorPicker
 
-root = tk.Tk()
+customtkinter.set_appearance_mode("dark")  
+
+root = customtkinter.CTk()
 root.title("Fotorobot")
-root.geometry("850x900")
+root.geometry("950x1030")
 
 canvas = tk.Canvas(root, width=700, height=700, bg="white")
 canvas.pack(side="right", padx=10, pady=10)
 
-control_frame = tk.Frame(root, width=400)
+control_frame = customtkinter.CTkFrame(root, width=400)
 control_frame.pack(side="left", fill="y", padx=10, pady=10)
 
 current_images = {}
@@ -60,24 +64,33 @@ def tyhjenda_liin():
     canvas.delete("all")
     current_images = {}
 
-def vali_nahavarv():
+def vali_nahavarv(valitud_varv=None):
     global skin_color
-    varv = colorchooser.askcolor(title="Vali nahavärv")
-    if varv[1]:
-        skin_color = varv[1]
-        if "Näo kuju" in current_images:
-            lae_pilt(current_images["Näo kuju"]["tee"], "Näo kuju")
+    if valitud_varv:
+        skin_color = valitud_varv
+    else:
+        varv = colorchooser.askcolor(title="Vali nahavärv")
+        if varv[1]:
+            skin_color = varv[1]
+
+    if "Näo kuju" in current_images:
+        lae_pilt(current_images["Näo kuju"]["tee"], "Näo kuju")
+
 
 def loo_kategooria(vanem, pealkiri, esemed):
-    raam = tk.LabelFrame(vanem, text=pealkiri, padx=5, pady=5)
+    raam = customtkinter.CTkFrame(vanem)
     raam.pack(fill="x", padx=5, pady=5)
-    
+
+    pealkiri_label = customtkinter.CTkLabel(raam, text=pealkiri, padx=5, pady=5)
+    pealkiri_label.pack(fill="x")
+
     for nimi, tee in esemed.items():
         def loo_klahvi_kaivitus(p=tee, k=pealkiri):
             return lambda: lae_pilt(p, k)
-        
-        klahv = tk.Button(raam, text=nimi, command=loo_klahvi_kaivitus())
+
+        klahv = customtkinter.CTkButton(raam, text=nimi, command=loo_klahvi_kaivitus())
         klahv.pack(fill="x", pady=2)
+
 
 näo_kujud = {
     "1 Shape": "213/naovorm1.png",
@@ -122,10 +135,17 @@ loo_kategooria(control_frame, "Nina", ninad)
 loo_kategooria(control_frame, "Suu", suud)
 loo_kategooria(control_frame, "Habe", habemed)
 
-varv_klahv = tk.Button(control_frame, text="Vali nahavärv", command=vali_nahavarv)
-varv_klahv.pack(fill="x", pady=5)
+#color picker
 
-tyhjenda_klahv = tk.Button(control_frame, text="Tühjenda kõik", command=tyhjenda_liin)
+colorpicker = CTkColorPicker(control_frame,
+                             width=100,
+                             height=30,
+                             command=vali_nahavarv)
+colorpicker.pack(fill="x", pady=5)
+
+tyhjenda_klahv = customtkinter.CTkButton(control_frame, text="Tühjenda kõik", command=tyhjenda_liin)
+tyhjenda_klahv.configure(fg_color="#FF0000", hover_color="#610000")
 tyhjenda_klahv.pack(fill="x", pady=5)
+
 
 root.mainloop()
